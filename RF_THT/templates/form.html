@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Program Diagnosis THT</title>
+</head>
+<body>
+
+<style>
+    * {
+    box-sizing: border-box;
+    }
+    body{
+        background-image: url("{{ url_for('static', filename='images/medic.webp') }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    h1{
+        text-align: center;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        font-size: xx-large;
+    }
+    h2{
+        text-align: center;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        color: white;
+    }
+    h3{
+        text-align: center;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        font-size: medium;
+        color: white;
+    }
+    h3>u{
+        border-bottom: white 2px solid;
+    }
+    .first-container{
+        border: solid white 5px;
+        position: relative; /* Add position relative to make absolute positioning work */
+        /* background-image: linear-gradient(180deg, #00CC66, #33CCCC); */
+    }
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        flex-wrap: wrap; /* Allow flex items to wrap */
+    }
+    .form-col {
+        width: 100%; /* Make the columns take up full width */
+        display: flex;
+        flex-direction: column; /* Arrange items vertically */
+    }
+
+    .column {
+        flex: 1;
+        padding: 10px;
+        border: solid 3px white;
+    }
+    .button-container {
+        display: flex;
+        justify-content: center; /* Center items horizontally */
+        align-items: center; /* Center items vertically */
+        position: relative; /* Change position to relative */
+    }
+
+    .submit-button {
+        margin-top: 10px;
+    }
+    .submit-button {
+        margin-top: 0px;
+        padding: 10px 20px; /* Add padding to the button */
+        background-color: transparent; /* Green background color */
+        color: white; /* White text color */
+        border: none; /* Remove border */
+        border-radius: 5px; /* Add border radius */
+        cursor: pointer; /* Add cursor pointer on hover */
+        font-size: 16px; /* Increase font size */
+        transition: background-color 0.3s; /* Add transition effect on background color change */
+        border: solid 2px grey;
+        margin-bottom: 5px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: bold
+    }
+
+    .submit-button:hover {
+        background-color: white; /* Darker green background color on hover */
+        font-size: large;
+        color: black;
+    }
+    .label-select-container {
+        /* border: solid gray 2px; */
+        border-bottom: solid gray 4px;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px; /* Increase the margin to add more space */
+    }
+    .label-select-container:hover {
+        /* border: solid gray 2px; */
+        border-bottom: solid #007bff 4px;
+    }
+    /* .label-select-container-checkbox {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 5px; /* Add padding for better visual separation */
+  /*  } */
+    div.form-radio{
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    label.pemeriksaan{
+        border-bottom: grey 2px solid;
+        color: white;
+    }
+    label.pemeriksaan:hover{
+        border-bottom: #007bff 2px solid;
+        font-size: large;
+    }
+    .h2-column {
+        flex-basis: 100%; /* Make the h2 element take up full width */
+        text-align: center; /* Center align the h2 element */
+    }
+    .form-label{
+        color: white;
+        font-weight: bold;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .form-input{
+        color: black;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* .form-checkbox {
+        margin-right: 10px; /* Space between checkbox and label */
+   /* } */
+
+    /* SELECT BUTTON */
+    /* Style the select dropdown */
+    select {
+        width: 100%; /* Adjust as needed */
+        /* padding: 10px; Adjust as needed */
+        font-size: 16px; /* Adjust as needed */
+        border: 1px solid #ccc; /* Adjust as needed */
+        border-radius: 2px; /* Adjust as needed */
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M10 14a1 1 0 0 1-.7-.29l-4-4a1.004 1.004 0 1 1 1.41-1.42L10 11.17l3.3-3.3a1.004 1.004 0 1 1 1.42 1.42l-4 4a1 1 0 0 1-.71.29z" fill="%23333"/></svg>'); /* Adjust as needed */
+        background-repeat: no-repeat;
+        background-position: right 10px center; /* Adjust as needed */
+    }
+
+    /* Style the select dropdown on hover */
+    select:hover {
+        border: 3px solid;
+        border-color: #007bff; /* Change to desired color */
+    }
+
+    /* Style the select dropdown when focused */
+    select:focus {
+        outline: none;
+        border-color: #007bff; /* Change to desired color */
+    }
+
+    /* RADIO BUTTON */
+    /* Hide the default radio button */
+    input[type="radio"] {
+        display: none;
+    }
+
+    /* Style the custom radio button */
+    input[type="radio"] + label {
+        display: inline-block;
+        cursor: pointer;
+        padding-left: 25px; /* Adjust as needed */
+        position: relative;
+    }
+
+    /* Style the radio button indicator */
+    input[type="radio"] + label:before {
+        content: "";
+        display: inline-block;
+        width: 16px; /* Adjust as needed */
+        height: 16px; /* Adjust as needed */
+        border-radius: 50%;
+        border: 2px solid white;
+        position: absolute;
+        left: 0;
+        top: 2px; /* Adjust as needed */
+    }
+
+    /* Style the radio button indicator when checked */
+    input[type="radio"]:checked + label:before {
+        background-color: #007bff; /* Change to desired color */
+    }
+
+    /* Hover effect for the radio button label */
+    input[type="radio"] + label:hover:before {
+        border-color: #007bff; /* Change to desired color */
+    }
+
+    /* Style the radio button label text */
+    input[type="radio"] + label::after {
+        content: attr(data-label);
+        position: absolute;
+        top: 0;
+        left: 30px; /* Adjust as needed */
+    }
+</style>
+<div class="first-container">
+    <div class="gejala">
+        <h2>Input Data Gejala</h2>
+        <form action="/submit-form" method="post" class="form-col">
+            <!-- First row -->
+            <div class="form-row">
+                <!-- GEJALA UMUM + IDENTIFIKASI -->
+                <div class="column" id="umum">
+                    <h3><u>UMUM</u></h3>
+                    <div class="label-select-container">
+                        <label class="form-label" for="lemas">Badan Lemas:</label>
+                        <select class="form-input" id="lemas" name="lemas">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="berat">Berat Badan:</label>
+                        <select class="form-input" id="berat" name="berat">
+                            <option value="0" selected>normal</option>
+                            <option value="1">menurun</option>
+                        </select>
+                    </div>
+                    
+                    <div class="label-select-container">
+                        <label class="form-label" for="bersendawa">Bersendawa:</label>
+                        <select class="form-input" id="bersendawa" name="bersendawa">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="keringat_dingin">Keringat Dingin:</label>
+                        <select class="form-input" id="keringat_dingin" name="keringat_dingin">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="kembung">Kembung:</label>
+                        <select class="form-input" id="kembung" name="kembung">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="kepala_berat">Kepala Berat:</label>
+                        <select class="form-input" id="kepala_berat" name="kepala_berat">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="kepala_nyeri">Kepala Nyeri:</label>
+                        <select class="form-input" id="kepala_nyeri" name="kepala_nyeri">
+                            <option value="0" selected>negative</option>
+                            <option value="1">kepala</option>
+                            <option value="2">pada wajah</option>
+                            <option value="3">kepala sebelah</option>
+                            <option value="4">belakang telinga</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="mata_gatal">Mata Gatal:</label>
+                        <select class="form-input" id="mata_gatal" name="mata_gatal">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+                    
+                    <div class="label-select-container">
+                        <label class="form-label" for="mata_juling">Mata Juling:</label>
+                        <select class="form-input" id="mat_juling" name="mata_juling">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="mual">Mual:</label>
+                        <select class="form-input" id="mual" name="mual">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="muntah">Muntah:</label>
+                        <select class="form-input" id="muntah" name="muntah">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="nafsu_makan">Nafsu Makan:</label>
+                        <select class="form-input" id="nafsu_makan" name="nafsu_makan">
+                            <option value="0" selected>normal</option>
+                            <option value="1">menurun</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="pandangan">Pandangan:</label>
+                        <select class="form-input" id="pandangan" name="pandangan">
+                            <option value="0" selected>normal</option>
+                            <option value="1">kabur</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="pusing">Pusing:</label>
+                        <select class="form-input" id="pusing" name="pusing">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="suhu">Suhu:</label>
+                        <select class="form-input" id="suhu" name="suhu">
+                            <option value="0" selected>36.5-37.6</option>
+                            <option value="1">37.7-38.4</option>
+                            <option value="2">38.5+</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="sesak_nafas">Sesak Nafas:</label>
+                        <select class="form-input" id="sesak_nafas" name="sesak_nafas">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="usia">Usia:</label>
+                        <select class="form-input" id="usia" name="usia">
+                            <option value="0" selected>1-17</option>
+                            <option value="1">18-56</option>
+                            <option value="2">56+</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="vertigo">Vertigo:</label>
+                        <select class="form-input" id="vertigo" name="vertigo">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- TELINGA  -->
+                <div class="column">
+                    <h3><u>TELINGA</u></h3>
+                    <div class="label-select-container">
+                        <label class="form-label" for="cairan_telinga">Cairan Telinga:</label>
+                        <select class="form-input" id="cairan_telinga" name="cairan_telinga">
+                            <option value="0" selected>negative</option>
+                            <option value="1">kuning</option>
+                            <option value="2">putih</option>
+                            <option value="3">bening</option>
+                            <option value="4">coklat</option>
+                            <option value="5">area_bengkak</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="telinga_bengkak">Bengkak:</label>
+                        <select class="form-input" id="telinga_bengkak" name="telinga_bengkak">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="telinga_berat">Berat:</label>
+                        <select class="form-input" id="telinga_berat" name="telinga_berat">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="telinga_berair">Berair/Kemasukan Air:</label>
+                        <select class="form-input" id="telinga_berair" name="telinga_berair">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="telinga_gatal">Gatal:</label>
+                        <select class="form-input" id="telinga_gatal" name="telinga_gatal">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+                    
+                    <div class="label-select-container">
+                        <label class="form-label" for="telinga_gangguan_pendengaran">Gangguan Pendengaran:</label>
+                        <select class="form-input" id="telinga_gangguan_pendengaran" name="telinga_gangguan_pendengaran">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="telinga_gendang_lubang">Gendang Telinga Lubang</label>
+                        <select class="form-input" id="telinga_gendang_lubang" name="telinga_gendang_lubang">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="telinga_merah">Kemerahan:</label>
+                        <select class="form-input" id="telinga_merah" name="telinga_merah">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="telinga_mendengung">Mendengung:</label>
+                        <select class="form-input" id="telinga_mendengung" name="telinga_mendengung">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="telinga_nyeri">Nyeri:</label>
+                        <select class="form-input" id="telinga_nyeri" name="telinga_nyeri">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>                      
+                    
+                    <div class="label-select-container">
+                        <label class="form-label" for="telinga_penuh">Penuh/Tersumbat/Tertutup:</label>
+                        <select class="form-input" id="telinga_penuh" name="telinga_penuh">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- HIDUNG  -->
+                <div class="column">
+                    <h3><u>HIDUNG</u></h3>
+                    <div class="label-select-container">
+                        <label class="form-label" for="hidung_belakang_ganjal">Belakang Hidung Ganjal:</label>
+                        <select class="form-input" id="hidung_belakang_ganjal" name="hidung_belakang_ganjal">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="hidung_bengkak">Bengkak:</label>
+                        <select class="form-input" id="hidung_bengkak" name="hidung_bengkak">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+                    
+                    <div class="label-select-container">
+                        <label class="form-label" for="hidung_bersin">Bersin:</label>
+                        <select class="form-input" id="hidung_bersin" name="hidung_bersin">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="hidung_kekentalan_ingus">Kekentalan Ingus:</label>
+                        <select class="form-input" id="hidung_kekentalan_ingus" name="hidung_kekentalan_ingus">
+                            <option value="0" selected>normal</option>
+                            <option value="1">cair</option>
+                            <option value="2">kental</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="hidung_merah">Kemerahan:</label>
+                        <select class="form-input" id="hidung_merah" name="hidung_merah">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="hidung_ingusan">Mengeluarkan Ingus:</label>
+                        <select class="form-input" id="hidung_ingusan" name="hidung_ingusan">
+                            <option value="0" selected>negative</option>
+                            <option value="1">bening</option>
+                            <option value="2">bening_bau</option>
+                            <option value="3">berdarah</option>
+                            <option value="4">berdarah_bau</option>
+                            <option value="5">kuning</option>
+                            <option value="6">kuning_bau</option>
+                            <option value="7">kuning_berdarah_bau</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="hidung_mimisan">Mimisan:</label>
+                        <select class="form-input" id="hidung_mimisan" name="hidung_mimisan">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="hidung_nyeri">Nyeri:</label>
+                        <select class="form-input" id="hidung_nyeri" name="hidung_nyeri">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="hidung_pilek">Pilek:</label>
+                        <select class="form-input" id="hidung_pilek" name="hidung_pilek">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="hidung_tersumbat">Tersumbat:</label>
+                        <select class="form-input" id="hidung_tersumbat" name="hidung_tersumbat">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- TENGGOROKAN -->
+                <div class="column">
+                    <h3><u>TENGGOROKAN</u></h3>
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorokan_bengkak">Area Leher Bengkak:</label>
+                        <select class="form-input" id="tenggorokan_bengkak" name="tenggorokan_bengkak">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorokan_mulut_bau">Area Mulut Bau:</label>
+                        <select class="form-input" id="tenggorokan_mulut_bau" name="tenggorokan_mulut_bau">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorokan_mulut_kering">Area Mulut Kering:</label>
+                        <select class="form-input" id="tenggorokan_mulut_kering" name="tenggorokan_mulut_kering">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorokan_mulut_pahit">Area Mulut Pahit:</label>
+                        <select class="form-input" id="tenggorokan_mulut_pahit" name="tenggorokan_mulut_pahit">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+                    
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorokan_pipi_bengkak">Area Pipi Bengkak:</label>
+                        <select class="form-input" id="tenggorokan_pipi_bengkak" name="tenggorokan_pipi_bengkak">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorokan_pipi_nyeri">Area Pipi Nyeri:</label>
+                        <select class="form-input" id="tenggorokan_pipi_nyeri" name="tenggorokan_pipi_nyeri">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorok_batuk">Batuk:</label>
+                        <select class="form-input" id="tenggorok_batuk" name="tenggorok_batuk">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorokan_berdehem">Berdehem:</label>
+                        <select class="form-input" id="tenggorokan_berdehem" name="tenggorokan_berdehem">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorokan_gatal">Gatal:</label>
+                        <select class="form-input" id="tenggorokan_gatal" name="tenggorokan_gatal">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorokan_kering">Kering:</label>
+                        <select class="form-input" id="tenggorokan_kering" name="tenggorokan_kering">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorokan_membuka_mulut">Nyeri Membuka Mulut:</label>
+                        <select class="form-input" id="tenggorokan_membuka_mulut" name="tenggorokan_membuka_mulut">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorokan_nyeri">Nyeri/Nyeri Telan:</label>
+                        <select class="form-input" id="tenggorokan_nyeri" name="tenggorokan_nyeri">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorokan_panas">Panas:</label>
+                        <select class="form-input" id="tenggorokan_panas" name="tenggorokan_panas">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorokan_suara_serak">Suara Serak:</label>
+                        <select class="form-input" id="tenggorokan_suara_serak" name="tenggorokan_suara_serak">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+
+                    <div class="label-select-container">
+                        <label class="form-label" for="tenggorokan_ganjal">Terasa Mengganjal:</label>
+                        <select class="form-input" id="tenggorokan_ganjal" name="tenggorokan_ganjal">
+                            <option value="0" selected>negative</option>
+                            <option value="1">positive</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- saat ini total = 35 -->
+            </div>
+            <!-- Second row -->
+            <div class="form-row">
+                <div class="h2-column">
+                    <h2>Input Data Pemeriksaan</h2>
+                </div>
+                <div class="column">
+                    <h3><u>Leher</u></h3>
+                    <div class="form-radio">
+                        <input type="radio" id="pemeriksaan_leher" name="pemeriksaan_leher" value="0" checked>
+                        <label for="pemeriksaan_leher" class="pemeriksaan">Normal</label><br>
+                        <input type="radio" id="pemeriksaan_leher_pembesaran" name="pemeriksaan_leher" value="1">
+                        <label for="pemeriksaan_leher_pembesaran" class="pemeriksaan">Pembesaran Kelenjar Getah Bening</label><br>
+                        <input type="radio" id="pemeriksaan_leher_tumor" name="pemeriksaan_leher" value="2">
+                        <label for="pemeriksaan_leher_tumor" class="pemeriksaan">Tumor</label><br>
+                        <input type="radio" id="pemeriksaan_leher_bengkak" name="pemeriksaan_leher" value="3">
+                        <label for="pemeriksaan_leher_bengkak" class="pemeriksaan">Bengkak Pipi Depan dan Belakang Telinga</label><br>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <h3><u>Telinga</u></h3>
+                    <div class="form-radio">
+                        <input type="radio" id="pemeriksaan_telinga_normal" name="pemeriksaan_telinga" value="0" checked>
+                        <label for="pemeriksaan_telinga_normal" class="pemeriksaan">Normal</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_sekret_mukopurulent" name="pemeriksaan_telinga" value="1">
+                        <label for="pemeriksaan_telinga_sekret_mukopurulent" class="pemeriksaan">Sekret Mukopurulent</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_sekret_purulent" name="pemeriksaan_telinga" value="2">
+                        <label for="pemeriksaan_telinga_sekret_purulent" class="pemeriksaan">Sekret Purulent</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_mikotik_plug" name="pemeriksaan_telinga" value="3">
+                        <label for="pemeriksaan_telinga_mikotik_plug" class="pemeriksaan">Mikotik Plug</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_serumen" name="pemeriksaan_telinga" value="4">
+                        <label for="pemeriksaan_telinga_serumen" class="pemeriksaan">Serumen</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_perforasi_membran_timpani" name="pemeriksaan_telinga" value="5">
+                        <label for="pemeriksaan_telinga_perforasi_membran_timpani" class="pemeriksaan">Perforasi Membran Tympani</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_perforasi_aurikula_hiperemi" name="pemeriksaan_telinga" value="6">
+                        <label for="pemeriksaan_telinga_perforasi_aurikula_hiperemi" class="pemeriksaan">Aurikula Hiperemi</label><br>
+                        <!-- <input type="radio" id="pemeriksaan_telinga_kae" name="pemeriksaan_telinga" value="7">
+                        <label for="pemeriksaan_telinga_kae" class="pemeriksaan">Kanalis Akustikus Eksternus (kae) Sempit</label><br> -->
+                        <input type="radio" id="pemeriksaan_telinga_membran_timpani_hiperemi" name="pemeriksaan_telinga" value="8">
+                        <label for="pemeriksaan_telinga_membran_timpani_hiperemi" class="pemeriksaan">Membran Tympani Hiperemi</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_membran_timpani_bulging" name="pemeriksaan_telinga" value="9">
+                        <label for="pemeriksaan_telinga_membran_timpani_bulging" class="pemeriksaan">Membran Tympani Bulging</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_sekret_mukoid" name="pemeriksaan_telinga" value="10">
+                        <label for="pemeriksaan_telinga_sekret_mukoid" class="pemeriksaan">Sekret Mukoid</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_edema" name="pemeriksaan_telinga" value="11">
+                        <label for="pemeriksaan_telinga_edema" class="pemeriksaan">Edema</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_aurikula_edema_hiperemi" name="pemeriksaan_telinga" value="12">
+                        <label for="pemeriksaan_telinga_aurikula_edema_hiperemi" class="pemeriksaan">Aurikula Edema Hiperemi</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_perforasi_mukopurulent" name="pemeriksaan_telinga" value="13">
+                        <label for="pemeriksaan_telinga_perforasi_mukopurulent" class="pemeriksaan">Perforasi Mukopurulent</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_perforasi_mukoid" name="pemeriksaan_telinga" value="14">
+                        <label for="pemeriksaan_telinga_perforasi_mukoid" class="pemeriksaan">Perforasi Mukoid</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_robek_segitiga" name="pemeriksaan_telinga" value="15">
+                        <label for="pemeriksaan_telinga_robek_segitiga" class="pemeriksaan">Robekan Segitiga di Membran Tympani</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_robek" name="pemeriksaan_telinga" value="16">
+                        <label for="pemeriksaan_telinga_robek" class="pemeriksaan">Membran Tympani Robek</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_membran_timpani_lubang" name="pemeriksaan_telinga" value="17">
+                        <label for="pemeriksaan_telinga_membran_timpani_lubang" class="pemeriksaan">Membran Tympani Lubang</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_robek_lubang" name="pemeriksaan_telinga" value="18">
+                        <label for="pemeriksaan_telinga_robek_lubang" class="pemeriksaan">Membran Tympani Robek terdapat Lubang</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_membran_timpani_lubang_berdarah" name="pemeriksaan_telinga" value="19">
+                        <label for="pemeriksaan_telinga_membran_timpani_lubang_berdarah" class="pemeriksaan">Membran Tympani Lubang disertai Darah</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_keluar_cairan" name="pemeriksaan_telinga" value="20">
+                        <label for="pemeriksaan_telinga_keluar_cairan" class="pemeriksaan">Membran Tympani Mengeluarkan Cairan</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_aurikula_edema" name="pemeriksaan_telinga" value="21">
+                        <label for="pemeriksaan_telinga_aurikula_edema" class="pemeriksaan">Aurikula Edema</label><br>
+                        <input type="radio" id="pemeriksaan_telinga_membran_timpani_retraksi" name="pemeriksaan_telinga" value="22">
+                        <label for="pemeriksaan_telinga_membran_timpani_retraksi" class="pemeriksaan">Membran Tympani Retraksi</label><br>
+                    </div>
+                </div>
+        
+                <div class="column">
+                    <h3><u>Hidung</u></h3>
+                    <div class="form-radio">
+                        <input type="radio" id="pemeriksaan_hidung_normal" name="pemeriksaan_hidung" value="0" checked>
+                        <label for="pemeriksaan_hidung_normal" class="pemeriksaan">Normal</label><br>
+                        <input type="radio" id="pemeriksaan_hidung_hiperemi" name="pemeriksaan_hidung" value="1">
+                        <label for="pemeriksaan_hidung_hiperemi" class="pemeriksaan">Hiperemi</label><br>
+                        <input type="radio" id="pemeriksaan_hidung_livid" name="pemeriksaan_hidung" value="2">
+                        <label for="pemeriksaan_hidung_livid" class="pemeriksaan">Livid</label><br>
+                        <input type="radio" id="pemeriksaan_hidung_serous" name="pemeriksaan_hidung" value="3">
+                        <label for="pemeriksaan_hidung_serous" class="pemeriksaan">Serous</label><br>
+                        <input type="radio" id="pemeriksaan_hidung_mukopurulent" name="pemeriksaan_hidung" value="4">
+                        <label for="pemeriksaan_hidung_mukopurulent" class="pemeriksaan">Mukopurulent</label><br>
+                        <input type="radio" id="pemeriksaan_hidung_purulent" name="pemeriksaan_hidung" value="5">
+                        <label for="pemeriksaan_hidung_purulent" class="pemeriksaan">Purulent</label><br>
+                        <input type="radio" id="pemeriksaan_hidung_polip" name="pemeriksaan_hidung" value="6">
+                        <label for="pemeriksaan_hidung_polip" class="pemeriksaan">Polip</label><br>
+                        <input type="radio" id="pemeriksaan_hidung_deviasi_septum" name="pemeriksaan_hidung" value="7">
+                        <label for="pemeriksaan_hidung_deviasi_septum" class="pemeriksaan">Deviasi Septum</label><br>
+                        <input type="radio" id="pemeriksaan_hidung_mucoid" name="pemeriksaan_hidung" value="8">
+                        <label for="pemeriksaan_hidung_mucoid" class="pemeriksaan">Mucoid</label><br>
+                        <input type="radio" id="pemeriksaan_hidung_pustule" name="pemeriksaan_hidung" value="9">
+                        <label for="pemeriksaan_hidung_pustule" class="pemeriksaan">Pustule</label><br>
+                        <input type="radio" id="pemeriksaan_hidung_tumpukan_ingus_benda_asing" name="pemeriksaan_hidung" value="10">
+                        <label for="pemeriksaan_hidung_tumpukan_ingus_benda_asing" class="pemeriksaan">Tumpukan Ingus / Benda Asing</label><br>
+                        <input type="radio" id="pemeriksaan_hidung_bleeding_point" name="pemeriksaan_hidung" value="11">
+                        <label for="pemeriksaan_hidung_bleeding_point" class="pemeriksaan">Bleeding Point</label><br>
+                        <input type="radio" id="pemeriksaan_hidung_stolsel" name="pemeriksaan_hidung" value="12">
+                        <label for="pemeriksaan_hidung_stolsel" class="pemeriksaan">Stolsel (Gumpalan Darah)</label><br>
+                        <input type="radio" id="pemeriksaan_hidung_sekret_serous_darah" name="pemeriksaan_hidung" value="13">
+                        <label for="pemeriksaan_hidung_sekret_serous_darah" class="pemeriksaan">Sekret Serous Bercampur Darah</label><br>
+                    </div>
+                </div>
+                
+
+                <div class="column">
+                    <h3><u>Tenggorokan</u></h3>
+                    <div class="form-radio">
+                        <input type="radio" id="pemeriksaan_tenggorokan" name="pemeriksaan_tenggorokan" value="0" checked>
+                        <label for="pemeriksaan_tenggorokan" class="pemeriksaan">Normal</label><br>
+                        <input type="radio" id="pemeriksaan_tenggorokan_t2" name="pemeriksaan_tenggorokan" value="1">
+                        <label for="pemeriksaan_tenggorokan_t2" class="pemeriksaan">Tonsil T2</label><br>
+                        <input type="radio" id="pemeriksaan_tenggorokan_t2_dedritus" name="pemeriksaan_tenggorokan" value="2">
+                        <label for="pemeriksaan_tenggorokan_t2_dedritus" class="pemeriksaan">Tonsil T2 Detritus</label><br>
+                        <input type="radio" id="pemeriksaan_tenggorokan_t2_hiperemi" name="pemeriksaan_tenggorokan" value="3">
+                        <label for="pemeriksaan_tenggorokan_t2_hiperemi" class="pemeriksaan">Tonsil T2 Hiperemi</label><br>
+                        <input type="radio" id="pemeriksaan_tenggorokan_t2_hiperemi_dedritus" name="pemeriksaan_tenggorokan" value="4">
+                        <label for="pemeriksaan_tenggorokan_t2_hiperemi_dedritus" class="pemeriksaan">Tonsil T2 Hiperemi Detritus</label><br>
+                        <input type="radio" id="pemeriksaan_tenggorokan_t3" name="pemeriksaan_tenggorokan" value="5">
+                        <label for="pemeriksaan_tenggorokan_t3" class="pemeriksaan">Tonsil T3</label><br>
+                        <input type="radio" id="pemeriksaan_tenggorokan_t3_dedritus" name="pemeriksaan_tenggorokan" value="6">
+                        <label for="pemeriksaan_tenggorokan_t3_dedritus" class="pemeriksaan">Tonsil T3 Detritus</label><br>
+                        <input type="radio" id="pemeriksaan_tenggorokan_t3_hiperemi" name="pemeriksaan_tenggorokan" value="7">
+                        <label for="pemeriksaan_tenggorokan_t3_hiperemi" class="pemeriksaan">Tonsil T3 Hiperemi</label><br>
+                        <input type="radio" id="pemeriksaan_tenggorokan_t4" name="pemeriksaan_tenggorokan" value="8">
+                        <label for="pemeriksaan_tenggorokan_t4" class="pemeriksaan">Tonsil T4</label><br>
+                        <input type="radio" id="pemeriksaan_tenggorokan_t4_dedritus" name="pemeriksaan_tenggorokan" value="9">
+                        <label for="pemeriksaan_tenggorokan_t4_dedritus" class="pemeriksaan">Tonsil T4 Detritus</label><br>
+                        <input type="radio" id="pemeriksaan_tenggorokan_mukosa_faring_hiperemi" name="pemeriksaan_tenggorokan" value="10">
+                        <label for="pemeriksaan_tenggorokan_mukosa_faring_hiperemi" class="pemeriksaan">Mukosa Faring Hiperemi</label><br>
+                        <input type="radio" id="pemeriksaan_tenggorokan_post_nasal_drip" name="pemeriksaan_tenggorokan" value="11">
+                        <label for="pemeriksaan_tenggorokan_post_nasal_drip" class="pemeriksaan">Post Nasal Drip</label><br>
+                    </div>
+                </div>
+            </div>
+            <!-- Button container -->
+            <div class="button-container">
+                <input class="submit-button" type="submit" value="Run">
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Diagnosis THT</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #ccc;
+        padding: 10px 0;
+    }
+
+    .column {
+        flex: 1;
+        padding: 0 10px;
+    }
+
+    .column:first-child {
+        flex: 2;
+    }
+
+    .return-button {
+        padding: 10px 20px;
+        background-color: whitesmoke;
+        color: black;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+        font-weight: bold;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        border: solid black 2px;
+    }
+
+    .return-button:hover {
+        background-color: grey;
+        font-size: large;
+    }
+
+    .button-container {
+        text-align: center; /* Center align the button */
+        margin-top: 20px; /* Add some margin from the diagnosis results */
+    }
+    @media (max-width: 600px) {
+        .row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+<body>
+    <div class="container">
+        <h1>Hasil Diagnosis</h1>
+        <div class="diagnosis-results">
+            {% if outputs %}
+                <h2>Diagnosis Results</h2>
+                {% for diagnosis in outputs %}
+                    <div class="row">
+                        <div class="column">
+                            <strong>{{ diagnosis[0] }}</strong>
+                        </div>
+                        <div class="column">
+                            {{ diagnosis[1] }}%
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No diagnosis results available.</p>
+            {% endif %}
+        </div>
+        <div class="button-container">
+            <form action="/" method="post">
+                <button type="submit" class="return-button">Return</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
